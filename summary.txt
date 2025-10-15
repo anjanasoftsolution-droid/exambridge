@@ -1,0 +1,88 @@
+<analysis>
+This trajectory chronicles the development of the SOS-Tools application, moving from initial setup to implementing core features, handling user feedback, and performing multiple rounds of bug fixing. The AI engineer started by clarifying user preferences for AI model and database, then proceeded with a bulk file write for the initial React and FastAPI structure. Key challenges involved addressing MongoDB's  serialization issues, optimizing AI prompt for faster generation, and critical bug fixes around PDF generation (multilingual font support, screenshot-based PDFs for non-English), duplicate downloads, and responsive UI. The engineer meticulously addressed each user-reported issue, including the  and  installation issues. The last major implemented feature was integrating Razorpay for subscriptions. The current state is debugging the quiz answer checking logic, as the user reported AI mistakes in evaluating answers within practice mode and provided a PDF for analysis.
+</analysis>
+
+<product_requirements>
+The SOS-Tools web application aims to empower students, teachers, and coaching institutes to generate custom, multilingual exam question papers for various Indian exams (NEET, JEE, UPSC, etc.) and practice them online. The platform supports User and Admin roles with email/password authentication, including verification and password reset.
+
+Core functionalities include:
+1.  **User Dashboard**: Displays editable profile, generated papers (with download/delete options), online practice access, performance statistics, and free-tier usage with upgrade prompts.
+2.  **Question Paper Generator**: A multi-step process for selecting exam type (now includes School Level with grades 1-12, Engineering with streams, and Pharmacy), subject, topics, question types (MCQ, short answer, true/false, essay, reasoning), and paper format (marks, duration, header content). AI (GPT-4o) generates questions, answers, difficulty, multilingual output, and answer keys, with downloadable PDF/HTML. Non-English PDFs are now screenshot-based for proper font rendering.
+3.  **Practice Mode**: Online quizzes with one question per screen, option highlighting, instant feedback (correct/wrong answers), score display, and history saving. This mode is now responsive.
+4.  **Subscription & Payment**: Free-tier limits (e.g., 1 paper/month, including deleted ones), paid plans, and Razorpay integration for payments, updating user credits and subscription status.
+5.  **Admin Console**: Manages users, subscription plans, payments, and monitors usage statistics. Admin credentials are  / .
+
+Recent user feedback highlighted issues with incorrect answer checking in practice mode, duplicate PDF downloads, non-English font visibility in PDFs, and the need for subscription plan management and Razorpay integration. These have been largely addressed, with the answer checking issue still pending a full resolution.
+</product_requirements>
+
+<key_technical_concepts>
+-   **Full-stack Architecture:** React frontend, FastAPI backend, MongoDB database.
+-   **UI/UX:** Shadcn UI, Tailwind CSS for modern, responsive design.
+-   **AI:** Emergent AI / LiteLLM (GPT-4o model) for multilingual question/answer generation.
+-   **PDF Generation:**  for English PDFs,  for screenshot-based non-English PDFs (with , ).
+-   **Payment:** Razorpay integration for subscriptions.
+-   **Data Management:** Pydantic models,  for async MongoDB, UUIDs for object identifiers.
+-   **Deployment:** Kubernetes, supervisor for service management.
+</key_technical_concepts>
+
+<code_architecture>
+The application follows a standard full-stack architecture with a React frontend, FastAPI backend, and MongoDB database.
+
+
+
+-   :
+    -   **Importance:** This is the core of the backend, handling all API endpoints for authentication, user management, question paper generation, PDF creation, quiz logic, subscription management, and admin functionalities.
+    -   **Changes:** Heavily modified to include:
+        -   Authentication endpoints (, , ).
+        -   Question generation logic, integrating with LiteLLM (GPT-4o) for diverse question types and multilingual support.
+        -   PDF generation functions using  for standard English papers and  for non-English (screenshot-based) PDFs, including font embedding and proper layout.
+        -   Endpoints for downloading (paper, answer key) and deleting generated papers.
+        -   Quiz submission and scoring logic.
+        -   Subscription plans and Razorpay integration (order creation, payment verification).
+        -   User model updates for free-tier limits, total papers generated, and roles.
+        -   Error handling for MongoDB serialization (ensuring  isn't directly used).
+        -   API prompt optimization for faster AI responses.
+-   :
+    -   **Importance:** Stores environment variables, including , , and Razorpay credentials.
+    -   **Changes:** Added , , .
+-   :
+    -   **Importance:** Manages Python dependencies.
+    -   **Changes:** Updated to include , , , , , , To use the fastapi command, please install "fastapi[standard]":
+
+	pip install "fastapi[standard]", , , etc.
+-   :
+    -   **Importance:** Defines the main application structure and  routes.
+    -   **Changes:** Established routes for , , , , , , and . Integrated  for notifications.
+-   :
+    -   **Importance:** Central hub for users to view their profile, generated papers, and access other features.
+    -   **Changes:** Implemented display of generated papers with download (paper and answer key) and delete buttons. Added logic to prevent duplicate downloads and show loading states.
+-   :
+    -   **Importance:** The user interface for creating question papers.
+    -   **Changes:** Developed a multi-step form with dynamic dropdowns (e.g., School Level triggering grade selection). Added input fields for custom paper headers (title, exam name, instructions). Integrated API calls for paper generation.
+-   :
+    -   **Importance:** Provides the interactive quiz experience.
+    -   **Changes:** Enhanced for responsiveness and mobile-friendliness. Displays one question at a time, handles option selection, and manages quiz submission.
+-   :
+    -   **Importance:** The interface for administrators.
+    -   **Changes:** Initial setup as a placeholder. Future development will focus on user, subscription, and statistics management.
+</code_architecture>
+
+<pending_tasks>
+-   Investigate and fix the answer checking logic in the quiz practice mode, as AI is incorrectly marking some correct answers as wrong (especially for True/False and MCQs).
+-   Further develop the Admin Panel to include comprehensive user management (activate/deactivate users, assign plans) and detailed monitoring of usage and statistics.
+-   Implement the frontend integration for Razorpay payments and display subscription plans.
+</pending_tasks>
+
+<current_work>
+The previous AI engineer was immediately engaged in debugging a critical issue reported by the user concerning the online practice mode. The user explicitly stated, please see the pdf here AI making mistake while checking answer and gives wrong for correct answer and provided a PDF artifact for analysis.
+
+The AI engineer acknowledged this, stating, Let me analyze the PDF to see the exact issue with answer checking. This indicates that the current work involves:
+1.  **PDF Analysis**: Examining the provided Emergent _ Fullstack App.pdf to understand specific instances where the quiz answer checking mechanism fails, particularly for correct answers being marked as wrong in True/False and MCQ formats.
+2.  **Debugging Answer Evaluation**: Identifying the root cause within either the  frontend component (how answers are collected and sent) or, more likely, the  backend endpoint in  (how answers are processed and compared against the AI-generated answer key).
+
+No code changes have been applied in direct response to this latest feedback. The immediate next step is analytical, aimed at pinpointing the precise error in the answer comparison logic before attempting a fix.
+</current_work>
+
+<optional_next_step>
+Analyze the provided PDF to debug the quiz answer checking logic and identify specific failures.
+</optional_next_step>
